@@ -79,3 +79,35 @@ class CrossattLayer(nn.Module):
         output = self.att(input_tensor, ctx_tensor, ctx_att_mask)
         attention_output = self.output(output, input_tensor)
         return attention_output
+
+
+
+class BertselfattLayer(nn.Module):
+    def __init__(self, attention_probs_dropout_prob=0.1,num_attention_heads=8, hidden_size=512,hidden_dropout_prob=0.1):
+        super(BertselfattLayer, self).__init__()
+        self.att = BertAttention(attention_probs_dropout_prob=0.1,num_attention_heads=8, hidden_size=512, ctx_dim=512)
+        self.output = BertAttOutput(hidden_size,hidden_dropout_prob=0.1)
+
+    def forward(self, input_tensor, ctx_tensor, attention_mask=None):
+        # Self attention attends to itself, thus keys and querys are the same (input_tensor).
+        self_output = self.att(input_tensor, ctx_tensor, attention_mask)
+        attention_output = self.output(self_output, input_tensor)
+        return attention_output
+
+
+class BertCrossattLayer(nn.Module):
+    def __init__(self, attention_probs_dropout_prob=0.1,num_attention_heads=8, hidden_size=256,hidden_dropout_prob=0.1):
+        super().__init__()
+        self.att = BertAttention(attention_probs_dropout_prob=0.1,num_attention_heads=8, hidden_size=256, ctx_dim=256)
+        self.output = BertAttOutput(hidden_size,hidden_dropout_prob=0.1)
+
+    def forward(self, input_tensor, ctx_tensor, ctx_att_mask=None):
+        output = self.att(input_tensor, ctx_tensor, ctx_att_mask)
+        attention_output = self.output(output, input_tensor)
+        return attention_outp
+
+
+
+
+
+
