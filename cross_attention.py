@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch 
 import math
 BertLayerNorm = torch.nn.LayerNorm
-from CrossattLayer import CrossattLayer
+from CrossattLayer import CrossattLayer, BertCrossattLayer
 
 
 
