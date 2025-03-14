@@ -6,3 +6,15 @@ This repository contains code modified from https://github.com/PhoebusSi/MMBS,  
 
 
 # Reference
+If you found this code is useful, please cite the following paper:
+[
+@inproceedings{li2024object,
+  title={Object attribute matters in visual question answering},
+  author={Li, Peize and Si, Qingyi and Fu, Peng and Lin, Zheng and Wang, Yan},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={38},
+  number={17},
+  pages={18545--18553},
+  year={2024}
+}
+]
