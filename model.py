@@ -51,7 +51,22 @@ class VisualGraphAggregator(nn.Module):
         i_new = self.im_sem_combined(torch.cat((vis_proj, att), 2))
         return vis + i_new
 
+class SemanticGraphAggregator(nn.Module):
+    def __init__(self, im_sem_embed_dim=512, obj_dim=768, sem_dim=768):
+        super(SemanticGraphAggregator, self).__init__()
+        self.im_embed_is = ReLUWithWeightNormFC(obj_dim, im_sem_embed_dim)
+        self.sem_embed_is = ReLUWithWeightNormFC(sem_dim, im_sem_embed_dim)
+        self.im_sem_combined = ReLUWithWeightNormFC(im_sem_embed_dim * 2, sem_dim)
 
+
+    def forward(self, vis, emb):
+        vis_proj = self.im_embed_is(vis)  
+        emb_proj = self.sem_embed_is(emb)  
+        similarity = torch.matmul(emb_proj, vis_proj.permute(0, 2, 1))
+        att = F.softmax(similarity, dim=2)  
+        i_att = torch.matmul(att, vis_proj)  
+        combine = self.im_sem_combined(torch.cat((emb_proj, i_att), 2)) 
+        return combine+emb
 
 
 class Lxmert_Model(nn.Module):
