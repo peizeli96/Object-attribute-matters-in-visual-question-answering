@@ -13,8 +13,15 @@ def init_weights(m):
     if type(m) == nn.Linear:
         with torch.no_grad():
             torch.nn.init.kaiming_normal_(m.weight)
-
             
+def instance_bce(logits, labels):
+    assert logits.dim() == 2
+    cross_entropy_loss = nn.CrossEntropyLoss()
+
+    prediction_ans_k, top_ans_ind = torch.topk(F.softmax(labels, dim=-1), k=1, dim=-1, sorted=False)
+    ce_loss = cross_entropy_loss(logits, top_ans_ind.squeeze(-1))
+
+    return ce_loss
 
 def train(opt, model, train_loader, eval_loader, num_epochs, output, s_epoch=0):
 
