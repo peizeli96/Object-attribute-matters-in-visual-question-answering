@@ -13,6 +13,7 @@ import numpy as np
 from torch.nn import functional as F
 from torch.nn.utils.weight_norm import weight_norm
 from contrastive_loss import ContrastiveLoss
+ContrastiveLossLoss = ContrastiveLoss(measure='dot', margin=0.001, max_violation=False)
 import os
 
 
@@ -179,6 +180,6 @@ class Model(nn.Module):
         ans_logit = self.classifier(cus_1 + cus_2)    
         norm_cls = F.normalize(cus_1, dim=-1)
         norm_head_relation = F.normalize(cus_2, dim=-1)
-        ans_loss = ContrastiveLoss(norm_cls, norm_head_relation) 
+        ans_loss = ContrastiveLossLoss(norm_cls, norm_head_relation) 
 
         return lxmert_logit, ans_logit, ans_loss    
