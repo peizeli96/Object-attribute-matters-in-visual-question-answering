@@ -162,16 +162,16 @@ class VQAFeatureDataset(Dataset):
 
         self.entries = _load_qa_dataset("data", name)
 
-        self.blip_features = json.load(open('data/vqacpv2_%s_blip.json' % name)) 
+        self.blip_features = json.load(open('data/vqacpv1_%s_blip.json' % name)) 
         self.blip_token = {}
-        self.blip2_features = json.load(open('data/vqacp2_%s_blip2.json' % name)) 
+        self.blip2_features = json.load(open('data/vqacp1_%s_blip2.json' % name)) 
         self.blip2_token = {}
-        self.ofa_features = json.load(open('data/vqacp2_%s_ofa_qa.json' % name)) 
+        self.ofa_features = json.load(open('data/vqacp1_%s_ofa_qa.json' % name)) 
         self.ofa_token = {}
-        self.konw = json.load(open('data/vqacp_v2_%s_caption_blip2.json'% name))
+        self.konw = json.load(open('data/vqacp_v1_%s_caption_blip2.json'% name))
         self.kb = {}        
 
-        self.attribute = json.load(open("data/vqacp2_%s_attribute.json" % name))
+        self.attribute = json.load(open("data/vqacp1_%s_attribute.json" % name))
         self.attribute_feature = {}
         
         
