@@ -91,13 +91,13 @@ def get_ques_ans_path(name):
     
 
     if name == 'train':
-        question_path = '../data/train.json'
+        question_path = '../data/vqacp_v1_train_question_new.json'
         answer_path = os.path.join('../data', 'train_target.pkl')
-    elif name == 'valid':
-        question_path = '../data/valid.json'
-        answer_path = os.path.join('../data', 'valid_target.pkl')
+    #elif name == 'valid':
+        #question_path = '../data/valid.json'
+        #answer_path = os.path.join('../data', 'valid_target.pkl')
     elif name == 'test':
-        question_path = '../data/test.json'
+        question_path = '../data/vqacp_v1_test_question_new.json'
         answer_path = os.path.join('../data', 'test_target.pkl')
 
     else:
