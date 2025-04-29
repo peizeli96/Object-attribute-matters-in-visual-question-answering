@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     batch_size = opt.batch_size
 
-    dictionary = Dictionary.load_from_file('dictionary.pkl')
+    dictionary = Dictionary.load_from_file('data/dictionary.pkl')
     
 
     train_dset = VQAFeatureDataset(opt,'train', dictionary) 
