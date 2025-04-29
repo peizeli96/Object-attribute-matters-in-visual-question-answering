@@ -4,6 +4,11 @@ Code for our AAAI-2024 paper: "Object Attribute Matters in Visual Question Answe
 This repository contains code modified from https://github.com/PhoebusSi/MMBS,     many thanks!
 ![image](https://github.com/user-attachments/assets/126e8a1e-8ec4-4700-adbb-5cc923795b4d)
 
+The image features are also available on Baidu Drive 通过网盘分享的文件：vqacpv1_image_feature
+链接: https://pan.baidu.com/s/1tsDQAE6-qHljRnd6Ig1XXg 提取码: 3ue4 
+--来自百度网盘超级会员v5的分享 (see Alternative Download for details).
+
+
 
 # Reference
 If you found this code is useful, please cite the following paper:
