@@ -13,7 +13,7 @@ import numpy as np
 from torch.nn import functional as F
 from torch.nn.utils.weight_norm import weight_norm
 from contrastive_loss import ContrastiveLoss
-ContrastiveLossLoss = ContrastiveLoss(measure='dot', margin=0.01, max_violation=False)
+ContrastiveLossLoss = ContrastiveLoss(measure='dot', margin=0.001, max_violation=False)
 import os
 
 
