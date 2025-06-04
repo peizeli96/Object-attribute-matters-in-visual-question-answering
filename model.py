@@ -13,7 +13,7 @@ import numpy as np
 from torch.nn import functional as F
 from torch.nn.utils.weight_norm import weight_norm
 from contrastive_loss import ContrastiveLoss
-ContrastiveLossLoss = ContrastiveLoss(measure='dot', margin=0.001, max_violation=False)
+criterion_graph = ContrastiveLoss(measure='dot', margin=0.01, max_violation=False)
 import os
 
 
@@ -125,10 +125,23 @@ class Model(nn.Module):
         self.atten_1 = Visual_Attention(dim_image_feats=512, dim_att_lstm=512, nb_hidden=1024)
         self.atten_2 = Visual_Attention(dim_image_feats=512, dim_att_lstm=512, nb_hidden=1024)
 
+        # # Initial attribute embedding
         self.attribute_emb = WordEmbedding(dataset.dictionary.ntoken, 300, .0, opt.op)
+        self.ofa_emb = WordEmbedding(dataset.dictionary.ntoken, 300, .0, opt.op)
+        self.blip2_emb = WordEmbedding(dataset.dictionary.ntoken, 300, .0, opt.op)
+
+        # self.word_embw = QuestionEmbedding(300 if 'c' not in opt.op else 600, opt.num_hid, 1, False, .0)
+
+        self.blip_emb = WordEmbedding(dataset.dictionary.ntoken, 300, .0, opt.op)
+        self.cap_emb = WordEmbedding(dataset.dictionary.ntoken, 300, .0, opt.op)
+        self.cap_embw = QuestionEmbedding(300 if 'c' not in opt.op else 600, opt.num_hid, 1, False, .0)
 
         if hasattr(opt, 'tfidf'):
-            self.attribute_emb = tfidf_loading(opt.tfidf, self.attribute_emb, opt, '../data') 
+            self.attribute_emb = tfidf_loading(opt.tfidf, self.attribute_emb, opt, 'data') 
+            self.cap_emb = tfidf_loading(opt.tfidf, self.cap_emb, opt, 'data')
+            self.ofa_emb = tfidf_loading(opt.tfidf, self.ofa_emb, opt, 'data')
+            self.blip_emb = tfidf_loading(opt.tfidf, self.blip_emb, opt, 'data')           
+            self.blip2_emb = tfidf_loading(opt.tfidf, self.blip2_emb, opt, 'data') 
 
      
         self.classifier = SimpleClassifier(512 , 512 * 2, dataset.num_ans_candidates, opt)
@@ -138,7 +151,9 @@ class Model(nn.Module):
         self.proj_lan = nn.Sequential(nn.Linear(768, 1024), nn.ReLU(), nn.Linear(1024, 512))
         self.proj_vis = nn.Sequential(nn.Linear(768, 1024), nn.ReLU(), nn.Linear(1024, 512))
 
-
+        self.proj_blip = nn.Sequential(nn.Linear(600, 512), nn.ReLU())
+        self.proj_blip2 = nn.Sequential(nn.Linear(600, 512), nn.ReLU())
+        self.proj_ofa =  nn.Sequential(nn.Linear(600, 512), nn.ReLU())
 
 
 
@@ -161,9 +176,20 @@ class Model(nn.Module):
         attribute_feature = self.proj_attribute(attribute_feat)
         attri_vis_feature = self.self_atten_tri(torch.cat((attribute_feature, vis_feat),1))
      
+        ################ 答案嵌入
+        blip_emb = self.blip_emb(blip_token)
+        blip_feat = self.proj_blip(blip_emb) 
 
-        ans_feat = torch.cat((blip_token, blip2_token, ofa_token),1) 
-        ans_feature = self.self_ans_lan_atten(torch.cat((ans_feat, lan_feat),1))[:,:3,:] 
+        blip2_emb = self.blip2_emb(blip2_token)
+        blip2_feat = self.proj_blip(blip2_emb)        
+
+        ofa_emb = self.ofa_emb(ofa_token)
+        ofa_feat = self.proj_ofa(ofa_emb) 
+
+        ans_feat = torch.cat((blip_feat, blip2_feat, ofa_feat),1) 
+
+        ans_ques_con = self.self_ans_lan_atten(torch.cat((ans_feat, lan_feat),1))
+        ans_feature = ans_ques_con[:,:3,:]       
         lan_ans_feat = self.ques_kb(ans_feature, lan_feat)
         
 
@@ -172,7 +198,7 @@ class Model(nn.Module):
 
 
 
-        kb_feature = self.lan_kb(cap_lan_feature, lan_feat)
+        kb_feature = self.lan_kb(cap_lan_feature, lan_feat)[:,:10,:]
 
         cus_1 = self.atten_1(obj_emb_relation, lan_ans_feat)
         cus_2 = self.atten_2(kb_feature, lan_ans_feat)
