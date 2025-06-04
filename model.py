@@ -176,7 +176,7 @@ class Model(nn.Module):
         attribute_feature = self.proj_attribute(attribute_feat)
         attri_vis_feature = self.self_atten_tri(torch.cat((attribute_feature, vis_feat),1))
      
-        ################ 答案嵌入
+
         blip_emb = self.blip_emb(blip_token)
         blip_feat = self.proj_blip(blip_emb) 
 
