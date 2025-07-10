@@ -122,6 +122,7 @@ class Model(nn.Module):
         self.lxmert_encoder = Lxmert_Model(dataset, opt)                
 
         self.vis_attri_graph = VisualGraphAggregator()
+        self.emb_attri_graph = SemanticGraphAggregator()
         self.atten_1 = Visual_Attention(dim_image_feats=512, dim_att_lstm=512, nb_hidden=1024)
         self.atten_2 = Visual_Attention(dim_image_feats=512, dim_att_lstm=512, nb_hidden=1024)
 
